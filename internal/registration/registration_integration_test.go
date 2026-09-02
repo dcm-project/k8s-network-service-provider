@@ -15,7 +15,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	dcmv1alpha1 "github.com/dcm-project/control-plane/api/sp/v1alpha1/provider"
+	agentv1alpha1 "github.com/dcm-project/environment-agent/api/v1alpha1"
 
 	"github.com/dcm-project/k8s-network-service-provider/internal/config"
 	"github.com/dcm-project/k8s-network-service-provider/internal/registration"
@@ -79,8 +79,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -96,7 +96,7 @@ var _ = Describe("Registration Integration", func() {
 	})
 
 	It("sends payload with network fields including metadata (AC-REG-020)", func() {
-		var receivedPayload dcmv1alpha1.Provider
+		var receivedPayload agentv1alpha1.Provider
 		var requestReceived atomic.Bool
 
 		mockServer = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -119,8 +119,8 @@ var _ = Describe("Registration Integration", func() {
 				Region:      "us-east-1",
 				Zone:        "us-east-1a",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -162,8 +162,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -208,8 +208,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -248,8 +248,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -292,8 +292,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -333,8 +333,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
@@ -371,8 +371,8 @@ var _ = Describe("Registration Integration", func() {
 				DisplayName: "K8s Network SP",
 				Endpoint:    "https://sp.example.com",
 			},
-			DCM: config.DCMConfig{
-				RegistrationURL: mockServer.URL,
+			Agent: config.AgentConfig{
+				URL: mockServer.URL,
 			},
 		}
 
