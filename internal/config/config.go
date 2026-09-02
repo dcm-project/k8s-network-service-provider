@@ -27,9 +27,9 @@ type ProviderConfig struct {
 	Zone        string `env:"ZONE"`
 }
 
-// DCMConfig holds DCM registry connection settings.
-type DCMConfig struct {
-	RegistrationURL string `env:"REGISTRATION_URL,notEmpty"`
+// AgentConfig holds Environment Agent connection settings.
+type AgentConfig struct {
+	URL string `env:"URL,notEmpty"`
 }
 
 // KubernetesConfig holds Kubernetes-specific settings.
@@ -53,7 +53,7 @@ type MonitoringConfig struct {
 type Config struct {
 	Server     ServerConfig     `envPrefix:"SP_SERVER_"`
 	Provider   ProviderConfig   `envPrefix:"SP_"`
-	DCM        DCMConfig        `envPrefix:"DCM_"`
+	Agent      AgentConfig      `envPrefix:"AGENT_"`
 	Kubernetes KubernetesConfig `envPrefix:"SP_K8S_"`
 	NATS       NATSConfig       `envPrefix:"SP_NATS_"`
 	Monitoring MonitoringConfig `envPrefix:"SP_MONITOR_"`

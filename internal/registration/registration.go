@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	dcmv1alpha1 "github.com/dcm-project/control-plane/api/sp/v1alpha1/provider"
-	dcmclient "github.com/dcm-project/control-plane/pkg/sp/client/provider"
+	agentv1alpha1 "github.com/dcm-project/environment-agent/api/v1alpha1"
+	agentclient "github.com/dcm-project/environment-agent/pkg/client"
 
 	v1alpha1 "github.com/dcm-project/k8s-network-service-provider/api/v1alpha1"
 	"github.com/dcm-project/k8s-network-service-provider/internal/config"
@@ -55,11 +55,11 @@ func SetMaxBackoff(d time.Duration) Option {
 	}
 }
 
-// Registrar handles registration with the DCM service provider registry.
+// Registrar handles registration with the Environment Agent.
 type Registrar struct {
 	cfg            *config.Config
 	logger         *slog.Logger
-	client         *dcmclient.ClientWithResponses
+	client         *agentclient.ClientWithResponses
 	initialBackoff time.Duration
 	maxBackoff     time.Duration
 	startOnce      sync.Once
@@ -68,9 +68,9 @@ type Registrar struct {
 
 // NewRegistrar creates a Registrar with the given configuration and options.
 func NewRegistrar(cfg *config.Config, logger *slog.Logger, opts ...Option) (*Registrar, error) {
-	u, err := url.Parse(cfg.DCM.RegistrationURL)
+	u, err := url.Parse(cfg.Agent.URL)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		return nil, fmt.Errorf("creating DCM client: invalid registration URL %q", cfg.DCM.RegistrationURL)
+		return nil, fmt.Errorf("creating agent client: invalid agent URL %q", cfg.Agent.URL)
 	}
 
 	r := &Registrar{
@@ -85,12 +85,12 @@ func NewRegistrar(cfg *config.Config, logger *slog.Logger, opts ...Option) (*Reg
 	}
 
 	httpClient := &http.Client{Timeout: httpTimeout}
-	c, err := dcmclient.NewClientWithResponses(
-		cfg.DCM.RegistrationURL,
-		dcmclient.WithHTTPClient(httpClient),
+	c, err := agentclient.NewClientWithResponses(
+		cfg.Agent.URL,
+		agentclient.WithHTTPClient(httpClient),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("creating DCM client: %w", err)
+		return nil, fmt.Errorf("creating agent client: %w", err)
 	}
 	r.client = c
 
@@ -98,8 +98,8 @@ func NewRegistrar(cfg *config.Config, logger *slog.Logger, opts ...Option) (*Reg
 }
 
 // BuildPayload constructs the registration payload from configuration.
-func BuildPayload(cfg *config.Config) dcmv1alpha1.Provider {
-	p := dcmv1alpha1.Provider{
+func BuildPayload(cfg *config.Config) agentv1alpha1.Provider {
+	p := agentv1alpha1.Provider{
 		Name:          cfg.Provider.Name,
 		ServiceType:   serviceType,
 		Endpoint:      cfg.Provider.Endpoint + endpointSuffix,
@@ -113,7 +113,7 @@ func BuildPayload(cfg *config.Config) dcmv1alpha1.Provider {
 	}
 
 	if cfg.Provider.Region != "" || cfg.Provider.Zone != "" {
-		meta := &dcmv1alpha1.ProviderMetadata{}
+		meta := &agentv1alpha1.ProviderMetadata{}
 		if cfg.Provider.Region != "" {
 			region := cfg.Provider.Region
 			meta.RegionCode = &region
@@ -175,7 +175,7 @@ func (r *Registrar) run(ctx context.Context) {
 	}
 }
 
-func (r *Registrar) register(ctx context.Context, provider dcmv1alpha1.Provider) error {
+func (r *Registrar) register(ctx context.Context, provider agentv1alpha1.Provider) error {
 	resp, err := r.client.CreateProviderWithResponse(ctx, nil, provider)
 	if err != nil {
 		return fmt.Errorf("sending registration request: %w", err)

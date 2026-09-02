@@ -23,7 +23,7 @@ var _ = Describe("Configuration", func() {
 		_ = os.Unsetenv("SP_ENDPOINT")
 		_ = os.Unsetenv("SP_REGION")
 		_ = os.Unsetenv("SP_ZONE")
-		_ = os.Unsetenv("DCM_REGISTRATION_URL")
+		_ = os.Unsetenv("AGENT_URL")
 		_ = os.Unsetenv("SP_NATS_URL")
 		_ = os.Unsetenv("SP_K8S_NAMESPACE")
 		_ = os.Unsetenv("SP_K8S_KUBECONFIG")
@@ -40,7 +40,7 @@ var _ = Describe("Configuration", func() {
 	setRequiredEnv := func() {
 		_ = os.Setenv("SP_NAME", "test-sp")
 		_ = os.Setenv("SP_ENDPOINT", "https://test.example.com")
-		_ = os.Setenv("DCM_REGISTRATION_URL", "https://dcm.example.com")
+		_ = os.Setenv("AGENT_URL", "https://dcm.example.com")
 	}
 
 	It("loads configuration from environment variables", func() {
